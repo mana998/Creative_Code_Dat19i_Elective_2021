@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Basics</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            /*No scroll bars*/
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" height="1000" width="1000">
+
+    </canvas>
+    <script>
+
+        let x = 0;
+        let y = 0;
+        //access canvas element
+        const canvas = document.getElementById("canvas");
+        //context
+        const ctx = canvas.getContext("2d");
+
+       /* ctx.fillStyle = "blue";
+        // create "rectangle" 1000x1000
+        ctx.fillRect(x,y,30,30);
+
+        document.addEventListener("keypress", logKey);
+
+        function logKey(e){
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "black";
+            switch (e.code) {
+                case "KeyW":
+                    y -= 30;
+                    ctx.fillRect(x,y,30,30);
+                    break;
+                case "KeyS":
+                    y += 30;
+                    ctx.fillRect(x,y,30,30);
+                    break;
+                case "KeyD":
+                    x += 30;
+                    ctx.fillRect(x,y,30,30);
+                    break;
+                case "KeyA":
+                    x -= 30;
+                    ctx.fillRect(x,y,30,30);
+                    break;
+            }
+        }*/
+/*
+        //works like stack
+        //save configuratin push
+        ctx.save();
+        //change configuration
+        ctx.rotate(180 * Math.PI / 180);
+        //restore configuration pop
+        ctx.restore();
+
+        let color = "black";
+        //for (let x = 0; x<8; x++){
+            //for (let y = 0; y<8; y++){
+        for (let x = 0; x<canvas.width; x+=30){
+            for (let y = 0; y<canvas.height; y+=30){
+                color = (color == "black" ? "blue" : "black");
+                drawSquare(x, y, color);
+                //drawSquare(x*30, y*30, color);
+            }
+            color = (color == "black" ? "blue" : "black");
+        }
+
+        function drawSquare(x, y, color){
+            ctx.fillStyle = color;
+            ctx.fillRect(x,y,30,30);
+        }
+
+        */
+
+        //create square 50x50 with border
+        ctx.strokeStyle = "red";
+        ctx.strokeRect(0,0,50,50);
+        ctx.strokeStyle = "blue";
+        ctx.rect(50,50,50,50);
+        ctx.stroke();
+
+    </script>
+</body>
+</html>
