@@ -11,7 +11,7 @@ const colorOffBorder = "#243542";
 const colorBackground = "#242526";
 
 //Size
-let size = 10; //5-10
+let size = 7;
 let xStart ;
 let xDifference;
 let yDifference;
@@ -72,7 +72,8 @@ function setup(){
     let hour = now.getHours().toString(2).padStart(5, 0);
     let minute = now.getMinutes().toString(2).padStart(6, 0);
     let second = now.getSeconds().toString(2).padStart(6, 0);
-    writeText(x + size*10, y - yDifference, "-     \tSIZE     +",  `${size*3}px Arial`);
+    writeText(x + size*10, y - yDifference * 1.25, "-     SIZE     +",  `${size*3}px Arial`);
+    writeText(x + size*10, y - (yDifference * 0.8), "(Press +/- to resize)",  `${size*1.5}px Arial`);
     showTime(hour, x, y);
     y += yDifference;
     showTime(minute, x, y);
