@@ -12,30 +12,57 @@ const colorBackground = "#242526";
 
 //Size
 let size = 10; //5-10
-let xStart = (canvas.width / 2) - (size * size) ;
-const xDifference = size * 4;
-const yDifference = size * 6;
-let yStart = (canvas.height / 3);
-const sizeBorder = size * 0.2;
+let xStart ;
+let xDifference;
+let yDifference;
+let yStart;
+let sizeBorder;
 
 //Text
 const colorText = "#cccccc";
-const fontText = `${size*1.5}px Arial`;
+let fontText;
 
 
 window.addEventListener("load",
     () => {
-        //canvas.width = window.innerWidth;
-        //canvas.height = window.innerHeight;
+        changeSizeValues();
         setup();
         setInterval(setup, 1000);
     }
 );
 
+window.addEventListener("keydown",
+    ({key}) => {
+        console.log(key);
+        if (key == "+"){
+            size++;
+        } else if (key == "-"){
+            size--;
+        }
+        if (size > 10) {
+            size = 10;
+        } else if (size < 5) {
+            size = 5;
+        }
+        console.log(size);
+        changeSizeValues();
+        setup();
+    }
+);
+
+function changeSizeValues(){
+    xStart = (canvas.width / 2) - (size * 10);
+    xDifference = size * 4;
+    yDifference = size * 6;
+    yStart = (canvas.height / 3);
+    sizeBorder = size * 0.2;
+    fontText = `${size*1.5}px Arial`;
+}
+
 function setup(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    xStart = (canvas.width / 2) - (size * size) ;
+    xStart = (canvas.width / 2) - (size * 10);
     yStart = (canvas.height / 3);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
@@ -45,6 +72,7 @@ function setup(){
     let hour = now.getHours().toString(2).padStart(5, 0);
     let minute = now.getMinutes().toString(2).padStart(6, 0);
     let second = now.getSeconds().toString(2).padStart(6, 0);
+    writeText(x + size*10, y - yDifference, "-     \tSIZE     +",  `${size*3}px Arial`);
     showTime(hour, x, y);
     y += yDifference;
     showTime(minute, x, y);
@@ -66,8 +94,8 @@ function drawBackground(){
     ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
-function writeText(x, y, text){
-    ctx.font = fontText;
+function writeText(x, y, text, font){
+    ctx.font = font || fontText;
     ctx.fillStyle = colorText;
     ctx.textAlign = "center";
     ctx.fillText(text, x, y);
