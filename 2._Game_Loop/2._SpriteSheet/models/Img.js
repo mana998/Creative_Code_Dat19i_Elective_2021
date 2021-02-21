@@ -1,7 +1,6 @@
 class Img {
     constructor (src, startRow, startColumn, width, height, rows, columns, speed) {
-        this.source = new Image()
-        this.source.src = src;
+        this.src = src
         //start of animation
         this.startRow = startRow;
         this.startColumn = startColumn;
@@ -20,8 +19,8 @@ class Img {
     }
 
     draw (ctx, x, y) {
-        let startWidth = this.startColumn + this.currentColumn * this.width;
-        let startHeight = this.startRow + this.currentRow * this.height;
+        let startWidth = this.currentColumn * this.width;
+        let startHeight = this.currentRow * this.height;
         this.currentSpeed++;
         if (this.currentSpeed === this.speed) {
             this.currentColumn++;
@@ -34,6 +33,6 @@ class Img {
                 this.currentRow = this.startRow;
             }
         }
-        ctx.drawImage(this.source, startWidth, startHeight, this.width, this.height, x, y, this.width, this.height);
+        ctx.drawImage(this.src, startWidth, startHeight, this.width, this.height, x, y, this.width, this.height);
     }
 }

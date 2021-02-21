@@ -4,7 +4,25 @@ const ctx = canvas.getContext("2d");
 let lastTime;
 const requiredElapsed = 1000 / 30; //30 fps
 
-let moneyImg = new Img("./assets/MonedaD.png", 0, 0, 16, 16, 0, 4, 5);
+const distance = 10;
+
+//SPRITES
+//money sprite
+const money = new Image();
+money.src  = "./assets/MonedaD.png";
+let goldMoneyImg = new Img(money, 0, 0, 16, 16, 0, 4, 5);
+//character sprite
+const bard = new Image();
+bard.src  = "./assets/bard.png";
+const spriteWidth = 32;
+const spriteHeight = 32;
+let bardDownImg = new Img(bard, 0, 1, spriteWidth, spriteHeight, 0, 1, 3);
+let bardLeftImg = new Img(bard, 1, 0, spriteWidth, spriteHeight, 0, 2, 3);
+let bardRightImg = new Img(bard, 2, 0, spriteWidth, spriteHeight, 0, 2, 3);
+let bardUpImg = new Img(bard, 3, 0, spriteWidth, spriteHeight, 0, 2, 3);
+
+//character
+let character = new Character(bardDownImg, canvas.width/2, canvas.height/2);
 
 window.addEventListener("load",
     () => {
@@ -25,30 +43,49 @@ window.addEventListener("resize",
     }
 );
 
-document.addEventListener("keypress", logKey);
+window.addEventListener("keydown", move);
 
-function logKey(e){
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "black";
-    switch (e.code) {
-        case "KeyW":
-            y -= 30;
-            ctx.fillRect(x,y,30,30);
+window.addEventListener("keyup", stop);
+
+function stop(e){
+    character.src.startColumn = 1;
+    character.src.columns = 1;
+}
+
+function move(e){
+    switch (e.key) {
+        case "w":
+        case "w":
+            character.src = bardUpImg;
+            character.y -= distance;
             break;
-        case "KeyS":
-            y += 30;
-            ctx.fillRect(x,y,30,30);
+        case "s":
+        case "S":
+            character.src = bardDownImg;
+            character.y += distance;
             break;
-        case "KeyD":
-            x += 30;
-            ctx.fillRect(x,y,30,30);
+        case "d":
+        case "D":
+            character.src = bardRightImg;
+            character.x += distance;
             break;
-        case "KeyA":
-            x -= 30;
-            ctx.fillRect(x,y,30,30);
+        case "a":
+        case "A":
+            character.src = bardLeftImg;
+            character.x -= distance;
             break;
     }
+    if (character.y < 0 - spriteHeight/2) {
+        character.y = canvas.height - spriteHeight/2;
+    } else if (character.y > canvas.height - spriteHeight/2){
+        character.y = 0 - spriteHeight/2;
+    } else if (character.x < 0 - spriteWidth/2){
+        character.x = canvas.width - spriteWidth/2;
+    } else if (character.x > canvas.width - spriteWidth/2){
+        character.x = 0 - spriteWidth/2;
+    }
+    character.src.startColumn = 0;
+    character.src.columns = 2;
 }
 
 function setup(){
@@ -65,10 +102,15 @@ function draw(now){
     const elapsed = now - lastTime;
     if (elapsed > requiredElapsed) {
         drawBackground();
-        moneyImg.draw(ctx, 50, 50);
+        drawImage(character.src, character.x, character.y);
+        drawImage(goldMoneyImg, 50, 50);
     }
 }
 
 function drawBackground() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawImage(img, x, y){
+    img.draw(ctx, x, y);
 }
