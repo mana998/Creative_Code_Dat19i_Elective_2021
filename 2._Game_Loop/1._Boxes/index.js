@@ -7,14 +7,17 @@ const ctx = canvas.getContext("2d");
 let x = 0;
 let y = 0;
 let lastTime;
-const requiredElapsed = 1000 / 66.667; //15 fps
+const requiredElapsed = 1000 / 15; //15 fps
+
+let firstBox;
+let fullBox;
+let resize = 1;
 
 window.addEventListener("load",
     () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         setup();
-        console.log("Hello");
     }
 );
 
@@ -22,11 +25,14 @@ window.addEventListener("resize",
     () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        console.log("Hello2");
+        setup();
     }
 );
 
 function setup() {
+    firstBox = new EmptyBox(canvas.width/4 , canvas.height/4, canvas.width/2, canvas.height/2);
+    fullBox = new FillBox(canvas.width/3 , canvas.height/3, canvas.width/3, canvas.height/3);
+    //console.log(firstBox.getArea());
     draw();
 }
 
@@ -49,6 +55,9 @@ function draw(now) {
             y--;
         }
         drawCircle(x, y);
+        //console.log("X ", eb.x, "Y", eb.y);
+        firstBox.draw(ctx);
+        fullBox.draw(ctx);
         lastTime = now;
     }  
 }
