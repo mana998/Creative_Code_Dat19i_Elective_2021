@@ -1,5 +1,6 @@
-class Img {
-    constructor (src, startRow, startColumn, width, height, rows, columns, speed) {
+class Img extends GameObject{
+    constructor (src, startRow, startColumn, rows, columns, speed, width, height, x, y) {
+        super(x, y, width, height);
         this.src = src
         //start of animation
         this.startRow = startRow;
@@ -10,17 +11,18 @@ class Img {
         //current position
         this.currentRow = startRow;
         this.currentColumn = startColumn;
-        //size
-        this.width = width;
-        this.height = height;
-        //speed higher number means slower
+        //speed - higher number means slower
         this.speed = speed;
         this.currentSpeed = 0;
     }
 
-    draw (ctx, x, y) {
-        let startWidth = this.currentColumn * this.width;
-        let startHeight = this.currentRow * this.height;
+    draw (ctx, x, y, width, height) {
+        if (!x) x = this.x;
+        if (!y) y = this.y;
+        if (!width) width = this.width;
+        if (!height) height = this.height;
+        let startWidth = this.currentColumn * width;
+        let startHeight = this.currentRow * height;
         this.currentSpeed++;
         if (this.currentSpeed === this.speed) {
             this.currentColumn++;
@@ -33,6 +35,6 @@ class Img {
                 this.currentRow = this.startRow;
             }
         }
-        ctx.drawImage(this.src, startWidth, startHeight, this.width, this.height, x, y, this.width, this.height);
+        ctx.drawImage(this.src, startWidth, startHeight, width, height, x, y, this.width, this.height);
     }
 }

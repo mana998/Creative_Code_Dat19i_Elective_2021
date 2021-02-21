@@ -1,8 +1,10 @@
-class Character {
-    constructor (src, x, y) {
-        this.src = src;
-        //position
-        this.x = x;
-        this.y = y;
+class Character extends GameObject{
+    constructor (source, width, height, x, y) {
+        super(x, y, width, height);
+        this.source = source;
+    }
+
+    draw(ctx){
+        this.source.draw(ctx, this.x, this.y, this.width, this.height);
     }
 }
