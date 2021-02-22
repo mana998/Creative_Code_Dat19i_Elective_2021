@@ -7,4 +7,9 @@ class Character extends GameObject{
     draw(ctx){
         this.source.draw(ctx, this.x, this.y, this.width, this.height);
     }
+
+    resetPosition(canvas){
+        this.x = canvas.width/2;
+        this.y = canvas.height/2;
+    }
 }

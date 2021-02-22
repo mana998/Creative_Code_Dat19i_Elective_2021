@@ -5,15 +5,12 @@ let lastTime;
 const requiredElapsed = 1000 / 30; //30 fps
 
 const distance = 10;
+const fontText = `10px Arial`
+
+let game = new Game();
+let isGameOver = false;
 
 //SPRITES
-//money sprite
-const money = new Image();
-money.src  = "./assets/MonedaD.png";
-let goldMoneyImg = new Img(money, 0, 0, 0, 4, 5, 16, 16, 50, 50);
-let goldMoneyImg2 = new Img(money, 0, 0, 0, 4, 5, 16, 16, 100, 100);
-let goldMoneyImg3 = new Img(money, 0, 0, 0, 4, 5, 16, 16, 150, 150);
-
 //character sprite
 const bard = new Image();
 bard.src  = "./assets/bard.png";
@@ -28,8 +25,9 @@ let bardUpImg = new Img(bard, 3, 0, 0, 2, 3, spriteWidth, spriteHeight);
 let character = new Character(bardDownImg, spriteWidth, spriteHeight, canvas.width/2, canvas.height/2);
 
 //array of objects
+//let gameObjects = game.getCoins();
 let gameObjects = [];
-gameObjects.push(goldMoneyImg, goldMoneyImg2, character, goldMoneyImg3);
+gameObjects.push(character);
 
 window.addEventListener("load",
     () => {
@@ -81,6 +79,14 @@ function move(e){
             character.source = bardLeftImg;
             character.x -= distance;
             break;
+        case "r":
+        case "R":
+            character.resetPosition(canvas);
+            game = new Game();
+            console.log("restart");
+            setup();
+            console.log("restart");
+            break;
     }
     if (character.y < 0 - spriteHeight/2) {
         character.y = canvas.height - spriteHeight/2;
@@ -108,15 +114,50 @@ function draw(now){
     }
     const elapsed = now - lastTime;
     if (elapsed > requiredElapsed) {
-        detectCollisions();
         drawBackground();
-        for (const gameObject of gameObjects) {
-            if (gameObject.isColliding && !gameObject.source){
-                gameObjects.splice(gameObjects.indexOf(gameObject), 1);
+        update();
+        if (isGameOver) {
+            //need to set size
+            writeText(canvas.width/2, canvas.height/2, "GAME OVER", "black");
+            writeText(canvas.width/2, canvas.height/2 + 20, "Press R to Restart", "black");
+        } else {
+            detectCollisions();
+            drawBackground();
+            for (const gameObject of gameObjects) {
+                if (gameObject.isColliding && !gameObject.source){
+                    if(gameObjects[0].src === gameObject.src){
+                        if (gameObjects[0] !== gameObject) {
+                            switchPosition(gameObjects[0], gameObject);
+                        }
+                        gameObjects.shift();
+                    } else {
+                        game.loseHP();
+                        character.resetPosition(canvas);
+                    }
+                    console.log(game.hp);
+                } else {
+                    drawImage(gameObject);
+                }
             }
-            drawImage(gameObject);
+            writeText(20, 20, "Press R to Restart", "black", "left");
+            writeText(canvas.width - 20, 20, `Level ${game.level}-${game.subLevel}`, "black", "right");
         }
     }
+}
+
+function writeText(x, y, text, color, align, font){
+    ctx.font = font || fontText;
+    ctx.fillStyle = color;
+    ctx.textAlign = align || "center";
+    ctx.fillText(text, x, y);
+}
+
+function switchPosition(obj1, obj2) {
+    let index1 = gameObjects.indexOf(obj1);
+    let index2 = gameObjects.indexOf(obj2);
+    let tempObject = gameObjects[index1];
+    gameObjects[index1] = gameObjects[index2];
+    gameObjects[index2] = tempObject;
 }
 
 function drawBackground() {
@@ -159,4 +200,45 @@ function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
         return false;
     }
     return true;
+}
+
+ function update(){
+    if (game.hp > 0) {
+        if (gameObjects.length === 1){
+            game.nextLvl();
+            gameObjects = game.getCoins();
+            showCoinsOrder();
+            //show order and then continue
+            setTimeout(function(){
+                character.resetPosition(canvas);
+                repositionCoins();
+                //character.resetPosition(canvas);
+                gameObjects.push(character);
+            }, game.wait);
+        }
+    } else {
+        console.log("Game Over");
+        isGameOver = true;
+    }
+}
+
+function showCoinsOrder(){
+    for (const gameObject of gameObjects) {
+        drawImage(gameObject);
+    }
+}
+
+function repositionCoins(){
+    for (let i = 0; i < gameObjects.length; i++) {
+        let isColliding = false;
+        do {
+            gameObjects[i].x = Math.floor(Math.random()*canvas.width);
+            gameObjects[i].y = Math.floor(Math.random()*canvas.height);
+            for (let j = 0; j < i; j++) {
+                isColliding = rectIntersect(gameObjects[i].x, gameObjects[i].y, gameObjects[i].width, gameObjects[i].height, gameObjects[j].x, gameObjects[j].y, gameObjects[j].width, gameObjects[j].height);
+                if (isColliding) {break;}
+            }
+            isColliding = rectIntersect(gameObjects[i].x, gameObjects[i].y, gameObjects[i].width, gameObjects[i].height, character.x, character.y, character.width, character.height);
+        } while (isColliding);
+    }
 }
