@@ -5,7 +5,9 @@ let lastTime;
 const requiredElapsed = 1000 / 30; //30 fps
 
 const distance = 10;
-const fontText = `10px Arial`
+const fontSize = canvas.width / 20
+const fontType = "Arial"
+const fontText = `${fontSize}px ${fontType}`
 
 let game = new Game();
 let isGameOver = false;
@@ -124,8 +126,8 @@ function draw(now){
         update();
         if (isGameOver) {
             //need to set size
-            writeText(canvas.width/2, canvas.height/2, "GAME OVER", "black");
-            writeText(canvas.width/2, canvas.height/2 + 20, "Press R to Restart", "black");
+            writeText(canvas.width/2, canvas.height/2 - fontSize, "GAME OVER", "black", "center", `${fontSize*2}px ${fontType}`);
+            writeText(canvas.width/2, canvas.height/2 + fontSize, "Press R to Restart", "black");
         } else {
             detectCollisions();
             drawBackground();
@@ -146,8 +148,8 @@ function draw(now){
                 }
             }
             drawLives();
-            writeText(canvas.width - 20, canvas.height - 20, "Press R to Restart", "black", "right");
-            writeText(20, 20, `Level ${game.level}-${game.subLevel}`, "black", "left");
+            writeText(canvas.width - fontSize, canvas.height - fontSize, "Press R to Restart", "black", "right");
+            writeText(fontSize, fontSize, `Level ${game.level}-${game.subLevel}`, "black", "left");
         }
     }
 }
@@ -249,6 +251,11 @@ function repositionCoins(){
         do {
             gameObjects[i].x = Math.floor(Math.random()*canvas.width);
             gameObjects[i].y = Math.floor(Math.random()*canvas.height);
+            //make sure coins are displayed fully on screen
+            if (gameObjects[i].x < game.coinWidth) gameObjects[i].x += game.coinWidth;
+            if (gameObjects[i].x > canvas.width - game.coinWidth) gameObjects[i].x -= game.coinWidth;
+            if (gameObjects[i].y < game.coinHeight) gameObjects[i].y += game.coinHeight;
+            if (gameObjects[i].y > canvas.height - game.coinHeight) gameObjects[i].y -= game.coinHeight;
             for (let j = 0; j < i; j++) {
                 isColliding = rectIntersect(gameObjects[i].x, gameObjects[i].y, gameObjects[i].width, gameObjects[i].height, gameObjects[j].x, gameObjects[j].y, gameObjects[j].width, gameObjects[j].height);
                 if (isColliding) {break;}

@@ -14,6 +14,8 @@ silver.src  = "./assets/silver.png";
 const ruby = new Image();
 ruby.src  = "./assets/ruby.png";
 const coins = [gold, silver, ruby];
+const coinWidth = 16;
+const coinHeight = 16;
 
 class Game {
     constructor () {
@@ -23,6 +25,8 @@ class Game {
         this.amount = defaultAmount - 1;
         this.hp = defaultHP;
         this.gameObjects = [];
+        this.coinWidth = coinWidth;
+        this.coinHeight = coinHeight;
     }
 
     update(){
@@ -65,7 +69,7 @@ class Game {
     }
 
     getCoin(type, x, y){
-        return new Img(type, 0, 0, 0, 4, 10, 16, 16, x, y);
+        return new Img(type, 0, 0, 0, 4, 10, coinWidth, coinHeight, x, y);
     }
 
 }
