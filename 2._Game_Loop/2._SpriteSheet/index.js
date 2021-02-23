@@ -240,8 +240,13 @@ function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
 }
 
 function showCoinsOrder(){
-    for (const gameObject of gameObjects) {
+    let y = (canvas.height - game.coinHeight) / 2;
+    let x = (canvas.width - gameObjects.length * game.coinWidth * 3/2) / 2;
+    for (let gameObject of gameObjects) {
+        gameObject.x = x;
+        gameObject.y = y;
         drawImage(gameObject);
+        x += coinWidth * 3/2;
     }
 }
 
