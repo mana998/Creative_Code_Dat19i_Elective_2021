@@ -35,6 +35,12 @@ let heartImg = new Img(heart, 0, 0, 0, 0, 10, heartWidth, heartHeight);
 //character
 let character = new Character(bardDownImg, spriteWidth, spriteHeight, canvas.width/2, canvas.height/2);
 
+//sound
+const collectSound = new sound("./assets/sounds/collect.wav");
+const wrongSound = new sound("./assets/sounds/wrong.wav");
+const gameOverSound = new sound("./assets/sounds/game_over.wav");
+const selectSound = new sound("./assets/sounds/select.wav");
+
 //array of objects
 //let gameObjects = game.getCoins();
 let gameObjects = [];
@@ -133,6 +139,7 @@ function move(e){
 function setup(dif){
     if (!difficulty && dif){
         game = new Game();
+        selectSound.play()
         document.getElementById("buttons").style.display = "none";
         game.coinAmount = difficulties.get(document.getElementById(dif));
         difficulty = dif;
@@ -174,8 +181,10 @@ function draw(now){
                             switchPosition(gameObjects[0], gameObject);
                         }
                         gameObjects.shift();
+                        collectSound.play();
                     } else {
                         game.loseHP();
+                        (game.hp > 0) ? wrongSound.play() : gameOverSound.play();
                         character.resetPosition(canvas);
                     }
                     //console.log(game.hp);
@@ -308,3 +317,18 @@ function repositionCoins(){
         } while (isColliding);
     }
 }
+
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+      this.sound.play();
+    }
+    this.stop = function(){
+      this.sound.pause();
+    }
+  }
