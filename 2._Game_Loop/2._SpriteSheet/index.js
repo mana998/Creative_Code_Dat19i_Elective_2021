@@ -20,7 +20,12 @@ let bardDownImg = new Img(bard, 0, 1, 0, 1, 3, spriteWidth, spriteHeight);
 let bardLeftImg = new Img(bard, 1, 0, 0, 2, 3, spriteWidth, spriteHeight);
 let bardRightImg = new Img(bard, 2, 0, 0, 2, 3, spriteWidth, spriteHeight);
 let bardUpImg = new Img(bard, 3, 0, 0, 2, 3, spriteWidth, spriteHeight);
-
+//heart sprite
+const heart= new Image();
+heart.src  = "./assets/heart.png";
+const heartWidth = 16;
+const heartHeight = 16;
+let heartImg = new Img(heart, 0, 0, 0, 0, 10, heartWidth, heartHeight);
 //character
 let character = new Character(bardDownImg, spriteWidth, spriteHeight, canvas.width/2, canvas.height/2);
 
@@ -83,9 +88,10 @@ function move(e){
         case "R":
             character.resetPosition(canvas);
             game = new Game();
-            console.log("restart");
+            gameObjects = [];
+            gameObjects.push(character);
+            isGameOver = false;
             setup();
-            console.log("restart");
             break;
     }
     if (character.y < 0 - spriteHeight/2) {
@@ -134,18 +140,28 @@ function draw(now){
                         game.loseHP();
                         character.resetPosition(canvas);
                     }
-                    console.log(game.hp);
+                    //console.log(game.hp);
                 } else {
                     drawImage(gameObject);
                 }
             }
-            writeText(20, 20, "Press R to Restart", "black", "left");
-            writeText(canvas.width - 20, 20, `Level ${game.level}-${game.subLevel}`, "black", "right");
+            drawLives();
+            writeText(canvas.width - 20, canvas.height - 20, "Press R to Restart", "black", "right");
+            writeText(20, 20, `Level ${game.level}-${game.subLevel}`, "black", "left");
         }
     }
 }
 
-function writeText(x, y, text, color, align, font){
+function drawLives() {
+    heartImg.x = canvas.width - heartWidth * 3/2;
+    heartImg.y = heartHeight * 1/2;
+    for (let i = 0; i < game.hp; i++){
+        drawImage(heartImg);
+        heartImg.x -= heartWidth * 3/2;
+    }
+}
+
+function writeText(x, y, text, color, align, font) {
     ctx.font = font || fontText;
     ctx.fillStyle = color;
     ctx.textAlign = align || "center";
@@ -217,7 +233,6 @@ function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
             }, game.wait);
         }
     } else {
-        console.log("Game Over");
         isGameOver = true;
     }
 }

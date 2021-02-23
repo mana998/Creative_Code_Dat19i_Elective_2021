@@ -65,7 +65,7 @@ class Game {
     }
 
     getCoin(type, x, y){
-        return new Img(type, 0, 0, 0, 4, 5, 16, 16, x, y);
+        return new Img(type, 0, 0, 0, 4, 10, 16, 16, x, y);
     }
 
 }
