@@ -9,8 +9,12 @@ const fontSize = canvas.width / 20
 const fontType = "Arial"
 const fontText = `${fontSize}px ${fontType}`
 
-let game = new Game();
+let game;
 let isGameOver = false;
+let difficulty;
+let isNew = true;
+
+let animationFrame;
 
 //SPRITES
 //character sprite
@@ -36,6 +40,16 @@ let character = new Character(bardDownImg, spriteWidth, spriteHeight, canvas.wid
 let gameObjects = [];
 gameObjects.push(character);
 
+//difficulty buttons
+const easy = document.getElementById("easy");
+const medium = document.getElementById("medium");
+const hard = document.getElementById("hard");
+let difficulties = new Map();
+difficulties.set(easy, 3);
+difficulties.set(medium, 5);
+difficulties.set(hard, 8);
+
+
 window.addEventListener("load",
     () => {
         canvas.width = window.innerWidth;
@@ -58,6 +72,10 @@ window.addEventListener("resize",
 window.addEventListener("keydown", move);
 
 window.addEventListener("keyup", stop);
+
+easy.addEventListener("click", () => setup("easy"));
+medium.addEventListener("click", () => setup("medium"));
+hard.addEventListener("click", () => setup("hard"));
 
 function stop(e){
     character.source.startColumn = 1;
@@ -90,9 +108,12 @@ function move(e){
         case "R":
             character.resetPosition(canvas);
             game = new Game();
+            isNew = true;
             gameObjects = [];
             gameObjects.push(character);
             isGameOver = false;
+            difficulty = '';
+            window.cancelAnimationFrame(animationFrame);
             setup();
             break;
     }
@@ -109,14 +130,28 @@ function move(e){
     character.source.columns = 2;
 }
 
-function setup(){
-    draw();
+function setup(dif){
+    if (!difficulty && dif){
+        game = new Game();
+        document.getElementById("buttons").style.display = "none";
+        game.coinAmount = difficulties.get(document.getElementById(dif));
+        difficulty = dif;
+        isGameOver = false;
+        draw();
+    } else if (!difficulty && !dif){
+        if (!game) {
+            game = new Game();
+        }
+        document.getElementById("buttons").style.display = "block";
+        isGameOver = true;
+        drawBackground();
+    }
 }
 
 function draw(now){
                 //img, startx, starty, width, height, posx, posy,  new width, new height
     //ctx.drawImage(moneyImg, 64, 0, 16, 16, 0, 0, 16, 16);
-    requestAnimationFrame(draw);
+    animationFrame = requestAnimationFrame(draw);
     if (!lastTime) {
         lastTime = now;
     }
@@ -124,6 +159,7 @@ function draw(now){
     if (elapsed > requiredElapsed) {
         drawBackground();
         update();
+        console
         if (isGameOver) {
             //need to set size
             writeText(canvas.width/2, canvas.height/2 - fontSize, "GAME OVER", "black", "center", `${fontSize*2}px ${fontType}`);
@@ -150,6 +186,7 @@ function draw(now){
             drawLives();
             writeText(canvas.width - fontSize, canvas.height - fontSize, "Press R to Restart", "black", "right");
             writeText(fontSize, fontSize, `Level ${game.level}-${game.subLevel}`, "black", "left");
+            writeText(fontSize, canvas.height - fontSize, `Difficulty: ${difficulty}`, "black", "left");
         }
     }
 }
@@ -223,6 +260,8 @@ function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
  function update(){
     if (game.hp > 0) {
         if (gameObjects.length === 1){
+            console.log(gameObjects.length);
+            console.log(game.amount);
             game.nextLvl();
             gameObjects = game.getCoins();
             showCoinsOrder();
