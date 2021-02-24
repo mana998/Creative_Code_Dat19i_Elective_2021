@@ -34,6 +34,8 @@ const heartHeight = 16;
 let heartImg = new Img(heart, 0, 0, 0, 0, 10, heartWidth, heartHeight);
 //character
 let character = new Character(bardDownImg, spriteWidth, spriteHeight, canvas.width/2, canvas.height/2);
+//background
+let backgrounds;
 //sound
 const collectSound = new Sound("./assets/sounds/collect.wav");
 const wrongSound = new Sound("./assets/sounds/wrong.wav");
@@ -57,6 +59,7 @@ difficulties.set(hard, 8);
 
 window.addEventListener("load",
     () => {
+        backgrounds = new Background().getBackgrounds();
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         fontSize = canvas.width / 90;
@@ -220,7 +223,12 @@ function writeText(x, y, text, color, align, font) {
 }
 
 function drawBackground() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log(game.subLevel);
+    console.log(backgrounds[1]);
+    let selected = game.level || 1;
+    let grassPattern = ctx.createPattern(backgrounds[selected - 1], "repeat"); 
+    ctx.fillStyle = grassPattern;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawImage(img){
