@@ -1,0 +1,11 @@
+> npm init -y
+> npm install socket.io
+> npm install express
+
+create app.js
+paste code from documentation "In conjuction with Express"
+https://www.npmjs.com/package/socket.io
+
+Run with
+> node app.js / npx nodemon app.js
+- npx runs it without downloading it
