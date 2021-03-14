@@ -1,0 +1,14 @@
+.toolsContainer {
+    position:absolute;
+    z-index: 2;
+    display: block;
+    padding: 1em;
+}
+
+.tools {
+    display: inline-block;
+}
+canvas {
+    position:absolute;
+    z-index: 1;
+}
