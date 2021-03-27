@@ -40,6 +40,7 @@ sizeElement.addEventListener("input",
 );*/
 
 socket.on("other client stop", (data) => {
+    //adjust position depending on window size
     data.paint.x *= window.innerWidth;
     data.paint.y *= window.innerHeight;
     ctx.moveTo(data.paint.x, data.paint.y);
@@ -47,6 +48,7 @@ socket.on("other client stop", (data) => {
 })
 
 socket.on("other client draw", (data) => {
+    //adjust position depending on window size
     data.paint.x *= window.innerWidth;
     data.paint.y *= window.innerHeight;
     draw(data.event, data.paint);
@@ -64,6 +66,7 @@ function stopDrawing(e, paint) {
     clientPaint.drawing = false;
     ctx.beginPath();
     if (!paint.server) {
+        //adjust position depending on window size
         paint.x = e.clientX / window.innerWidth;
         paint.y = e.clientY / window.innerHeight;
         socket.emit("client stop", {paint: paint})
@@ -71,11 +74,13 @@ function stopDrawing(e, paint) {
 }
 
 function draw(e, paint) {
+    //use passed params or client params
     paint = paint || clientPaint;
     if (paint.x && paint.y) {
         e.clientX = paint.x;
         e.clientY = paint.y;
     }
+    //stop if not drawing
     if (!paint.drawing) return;
     ctx.lineWidth = paint.size;
     ctx.lineCap = "round";
@@ -84,9 +89,13 @@ function draw(e, paint) {
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(e.clientX, e.clientY);
-    paint.x = e.clientX / window.innerWidth;
-    paint.y = e.clientY / window.innerHeight;
-    if (!paint.server) socket.emit("client draw", {event: e, paint: paint})
+    //send data to server
+    if (!paint.server) {
+        //adjust position depending on window size
+        paint.x = e.clientX / window.innerWidth;
+        paint.y = e.clientY / window.innerHeight;
+        socket.emit("client draw", {event: e, paint: paint})
+    }
 }
 
 canvas.addEventListener("mousedown", startDrawing)
